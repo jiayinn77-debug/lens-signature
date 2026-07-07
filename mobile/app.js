@@ -259,13 +259,20 @@ function landmarkToPoint(landmark) {
     x: placement.rect.width - (placement.x + landmark.x * placement.width),
     y: placement.y + landmark.y * placement.height,
   };
+  const centerX = placement.rect.width / 2;
+  const edgeStretch = 1.18;
+  rawPoint.x = Math.min(
+    placement.rect.width,
+    Math.max(0, centerX + (rawPoint.x - centerX) * edgeStretch),
+  );
 
   if (!smoothedPoint) {
     smoothedPoint = rawPoint;
     return rawPoint;
   }
 
-  const smoothing = 0.42;
+  const movement = Math.hypot(rawPoint.x - smoothedPoint.x, rawPoint.y - smoothedPoint.y);
+  const smoothing = movement > placement.rect.width * 0.08 ? 0.82 : 0.62;
   smoothedPoint = {
     x: smoothedPoint.x + (rawPoint.x - smoothedPoint.x) * smoothing,
     y: smoothedPoint.y + (rawPoint.y - smoothedPoint.y) * smoothing,
