@@ -34,6 +34,7 @@ let facingMode = "user";
 let handLandmarker = null;
 let lastVideoTime = -1;
 let lastPoint = null;
+let lastMidPoint = null;
 let smoothedPoint = null;
 let isDrawingByTouch = false;
 let recorder = null;
@@ -125,6 +126,7 @@ function undoInk() {
   }
   ctx.putImageData(snapshot, 0, 0);
   lastPoint = null;
+  lastMidPoint = null;
   smoothedPoint = null;
   updateUndoButton();
   setStatus("已撤回上一笔。");
@@ -135,6 +137,7 @@ function clearInk() {
   const rect = inkCanvas.getBoundingClientRect();
   ctx.clearRect(0, 0, rect.width, rect.height);
   lastPoint = null;
+  lastMidPoint = null;
   smoothedPoint = null;
   missedGestureFrames = 0;
   isPinching = false;
@@ -155,6 +158,7 @@ function drawPoint(point) {
   if (!lastPoint) {
     captureUndoSnapshot();
     lastPoint = point;
+    lastMidPoint = point;
     ctx.beginPath();
     ctx.arc(point.x, point.y, size / 2, 0, Math.PI * 2);
     ctx.fillStyle = inkColor.value;
@@ -165,15 +169,30 @@ function drawPoint(point) {
   const distance = Math.hypot(point.x - lastPoint.x, point.y - lastPoint.y);
   if (distance > Math.min(rect.width, rect.height) * 0.24) {
     lastPoint = point;
+    lastMidPoint = point;
     return;
   }
 
-  ctx.beginPath();
-  ctx.moveTo(lastPoint.x, lastPoint.y);
-  const midX = (lastPoint.x + point.x) / 2;
-  const midY = (lastPoint.y + point.y) / 2;
-  ctx.quadraticCurveTo(midX, midY, point.x, point.y);
-  ctx.stroke();
+  const maxSegment = Math.max(size * 1.25, 8);
+  const steps = Math.max(1, Math.ceil(distance / maxSegment));
+  let previousPoint = lastPoint;
+  for (let index = 1; index <= steps; index += 1) {
+    const t = index / steps;
+    const nextPoint = {
+      x: lastPoint.x + (point.x - lastPoint.x) * t,
+      y: lastPoint.y + (point.y - lastPoint.y) * t,
+    };
+    const midPoint = {
+      x: (previousPoint.x + nextPoint.x) / 2,
+      y: (previousPoint.y + nextPoint.y) / 2,
+    };
+    ctx.beginPath();
+    ctx.moveTo(lastMidPoint.x, lastMidPoint.y);
+    ctx.quadraticCurveTo(previousPoint.x, previousPoint.y, midPoint.x, midPoint.y);
+    ctx.stroke();
+    previousPoint = nextPoint;
+    lastMidPoint = midPoint;
+  }
   lastPoint = point;
 }
 
@@ -182,6 +201,7 @@ function resetAirStroke(force = false) {
   cursor.classList.remove("is-drawing");
   if (!force && missedGestureFrames < 5) return;
   lastPoint = null;
+  lastMidPoint = null;
   smoothedPoint = null;
   drawingGestureFrames = 0;
 }
@@ -391,6 +411,7 @@ function detectHands() {
         } else {
           cursor.classList.remove("is-drawing");
           lastPoint = null;
+          lastMidPoint = null;
           if (lastGestureState !== "aiming") {
             setStatus("食指正在定位；三指握拳并捏合时才会落笔。");
             lastGestureState = "aiming";
@@ -570,6 +591,7 @@ for (const eventName of ["pointerup", "pointercancel", "pointerleave"]) {
   inkCanvas.addEventListener(eventName, () => {
     isDrawingByTouch = false;
     lastPoint = null;
+    lastMidPoint = null;
   });
 }
 
