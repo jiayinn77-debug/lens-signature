@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>镜头签</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="stage" aria-label="镜头签名画布">
+        <video id="camera" playsinline muted></video>
+        <canvas id="inkCanvas"></canvas>
+        <canvas id="recordCanvas" aria-hidden="true"></canvas>
+
+        <div class="topbar">
+          <div>
+            <p class="eyebrow">Lens Signature</p>
+            <h1>镜头签</h1>
+          </div>
+          <button id="flipCamera" class="icon-button" type="button" aria-label="切换摄像头" title="切换摄像头">
+            <span aria-hidden="true">↺</span>
+          </button>
+        </div>
+
+        <div id="cursor" class="cursor" aria-hidden="true"></div>
+        <div id="status" class="status">食指定位；三指握拳并捏合时落笔</div>
+      </section>
+
+      <section class="control-panel" aria-label="控制区">
+        <div class="primary-actions">
+          <button id="startCamera" class="button main" type="button">开始镜头</button>
+          <button id="recordToggle" class="button record" type="button">录制</button>
+          <button id="undoInk" class="button ghost" type="button" disabled>撤回</button>
+          <button id="clearInk" class="button ghost" type="button">清空</button>
+        </div>
+
+        <div class="tool-grid">
+          <label class="field">
+            <span>笔触</span>
+            <input id="brushSize" type="range" min="3" max="22" value="9" />
+          </label>
+
+          <label class="field">
+            <span>滤镜</span>
+            <select id="filterSelect">
+              <option value="none">原片</option>
+              <option value="cinema">电影</option>
+              <option value="mono">黑白</option>
+              <option value="neon">霓虹</option>
+              <option value="warm">暖调</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>颜色</span>
+            <input id="inkColor" type="color" value="#f8f1dc" />
+          </label>
+
+          <label class="toggle">
+            <input id="trailMode" type="checkbox" checked />
+            <span>发光签名</span>
+          </label>
+        </div>
+
+        <div id="savePanel" class="save-panel" hidden>
+          <video id="preview" controls playsinline></video>
+          <a id="downloadLink" class="button save" download="lens-signature.webm">保存视频</a>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

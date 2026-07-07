@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>镜头签 Mobile</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="camera-app">
+      <section class="viewfinder" aria-label="镜头签相机">
+        <video id="camera" playsinline muted></video>
+        <canvas id="inkCanvas"></canvas>
+        <canvas id="recordCanvas" aria-hidden="true"></canvas>
+
+        <div class="top-toolbar">
+          <button id="flipCamera" class="icon-button" type="button" aria-label="切换摄像头" title="切换摄像头">
+            <span aria-hidden="true">↺</span>
+          </button>
+          <button id="filterQuick" class="icon-button" type="button" aria-label="切换滤镜" title="切换滤镜">
+            <span aria-hidden="true">◐</span>
+          </button>
+          <button id="settingsToggle" class="icon-button" type="button" aria-label="设置" title="设置">
+            <span aria-hidden="true">⚙</span>
+          </button>
+        </div>
+
+        <div class="brand-mark">
+          <p>Lens Signature</p>
+          <h1>镜头签</h1>
+        </div>
+
+        <div id="cursor" class="cursor" aria-hidden="true"></div>
+        <div id="status" class="status">食指定位；三指握拳并捏合时落笔</div>
+
+        <div class="side-actions left">
+          <button id="galleryButton" class="round-action" type="button" aria-label="图库或导入" title="图库或导入">
+            <span aria-hidden="true">▧</span>
+          </button>
+        </div>
+
+        <div class="side-actions right">
+          <button id="undoInk" class="round-action" type="button" aria-label="撤回上一笔" title="撤回上一笔" disabled>
+            <span aria-hidden="true">↶</span>
+          </button>
+          <button id="shareButton" class="round-action" type="button" aria-label="保存或分享" title="保存或分享" disabled>
+            <span aria-hidden="true">⇪</span>
+          </button>
+        </div>
+
+        <section class="capture-dock" aria-label="拍摄控制">
+          <button id="startCamera" class="start-pill" type="button">开始镜头</button>
+          <div class="capture-row">
+            <span class="dock-label">图库</span>
+            <button id="shutterButton" class="shutter" type="button" aria-label="开始镜头或录制">
+              <span></span>
+            </button>
+            <span class="dock-label">保存</span>
+          </div>
+        </section>
+
+        <section class="mode-strip" aria-label="签名样式、滤镜和模板">
+          <button class="mode-chip is-active" data-panel="styles" type="button">签名样式</button>
+          <button class="mode-chip" data-panel="filters" type="button">滤镜</button>
+          <button class="mode-chip" data-panel="templates" type="button">镜头签模板</button>
+        </section>
+
+        <section id="bottomPanel" class="bottom-panel" aria-label="底部工具">
+          <div class="panel-track" data-panel-content="styles">
+            <button class="swatch is-active" data-color="#f8f1dc" type="button">奶油光</button>
+            <button class="swatch" data-color="#8fffd2" type="button">薄荷</button>
+            <button class="swatch" data-color="#ff7aa8" type="button">玫瑰</button>
+            <button class="swatch" data-color="#8db8ff" type="button">蓝墨</button>
+          </div>
+          <div class="panel-track" data-panel-content="filters" hidden>
+            <button class="filter-chip is-active" data-filter="none" type="button">原片</button>
+            <button class="filter-chip" data-filter="cinema" type="button">电影</button>
+            <button class="filter-chip" data-filter="mono" type="button">黑白</button>
+            <button class="filter-chip" data-filter="neon" type="button">霓虹</button>
+            <button class="filter-chip" data-filter="warm" type="button">暖调</button>
+          </div>
+          <div class="panel-track" data-panel-content="templates" hidden>
+            <button class="template-chip is-active" type="button">自由签</button>
+            <button class="template-chip" type="button">日期签</button>
+            <button class="template-chip" type="button">手账框</button>
+            <button class="template-chip" type="button">留白卡</button>
+          </div>
+        </section>
+
+        <section id="settingsSheet" class="settings-sheet" aria-label="设置面板" hidden>
+          <div class="sheet-handle"></div>
+          <label class="field">
+            <span>笔触</span>
+            <input id="brushSize" type="range" min="3" max="22" value="9" />
+          </label>
+          <label class="field">
+            <span>颜色</span>
+            <input id="inkColor" type="color" value="#f8f1dc" />
+          </label>
+          <label class="toggle">
+            <input id="trailMode" type="checkbox" checked />
+            <span>发光签名</span>
+          </label>
+          <button id="clearInk" class="sheet-button danger" type="button">清空画布</button>
+        </section>
+
+        <section id="savePanel" class="save-panel" aria-label="保存视频" hidden>
+          <video id="preview" controls playsinline></video>
+          <a id="downloadLink" class="sheet-button save" download="lens-signature.webm">保存视频</a>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
