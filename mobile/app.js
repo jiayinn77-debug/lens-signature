@@ -11,6 +11,7 @@ const settingsToggle = document.querySelector("#settingsToggle");
 const galleryButton = document.querySelector("#galleryButton");
 const shareButton = document.querySelector("#shareButton");
 const brushSize = document.querySelector("#brushSize");
+const edgeCalibration = document.querySelector("#edgeCalibration");
 const inkColor = document.querySelector("#inkColor");
 const trailMode = document.querySelector("#trailMode");
 const statusEl = document.querySelector("#status");
@@ -260,7 +261,7 @@ function landmarkToPoint(landmark) {
     y: placement.y + landmark.y * placement.height,
   };
   const centerX = placement.rect.width / 2;
-  const edgeStretch = 1.18;
+  const edgeStretch = Number(edgeCalibration.value) / 100;
   rawPoint.x = Math.min(
     placement.rect.width,
     Math.max(0, centerX + (rawPoint.x - centerX) * edgeStretch),
@@ -577,6 +578,9 @@ shutterButton.addEventListener("click", handleShutter);
 clearButton.addEventListener("click", clearInk);
 undoButton.addEventListener("click", undoInk);
 shareButton.addEventListener("click", shareLastRecording);
+edgeCalibration.addEventListener("input", () => {
+  setStatus(`边缘校准 ${edgeCalibration.value}%。偏中间就调大，偏外侧就调小。`);
+});
 galleryButton.addEventListener("click", () => {
   showPlaceholder("图库/导入入口已预留，下一版接入本地素材。");
 });
