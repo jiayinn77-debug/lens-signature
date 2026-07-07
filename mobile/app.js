@@ -237,11 +237,27 @@ function updateDrawingGesture(landmarks) {
   return isPinching;
 }
 
-function landmarkToPoint(landmark) {
+function getVideoCoverPlacement() {
   const rect = inkCanvas.getBoundingClientRect();
+  const videoWidth = video.videoWidth || rect.width;
+  const videoHeight = video.videoHeight || rect.height;
+  const scale = Math.max(rect.width / videoWidth, rect.height / videoHeight);
+  const width = videoWidth * scale;
+  const height = videoHeight * scale;
+  return {
+    rect,
+    x: (rect.width - width) / 2,
+    y: (rect.height - height) / 2,
+    width,
+    height,
+  };
+}
+
+function landmarkToPoint(landmark) {
+  const placement = getVideoCoverPlacement();
   const rawPoint = {
-    x: rect.width - landmark.x * rect.width,
-    y: landmark.y * rect.height,
+    x: placement.rect.width - (placement.x + landmark.x * placement.width),
+    y: placement.y + landmark.y * placement.height,
   };
 
   if (!smoothedPoint) {
@@ -400,12 +416,13 @@ function touchPoint(event) {
 }
 
 function drawRecordFrame() {
-  const rect = inkCanvas.getBoundingClientRect();
+  const placement = getVideoCoverPlacement();
+  const rect = placement.rect;
   recordCtx.save();
   recordCtx.filter = filterMap[currentFilter] || "none";
   recordCtx.translate(rect.width, 0);
   recordCtx.scale(-1, 1);
-  recordCtx.drawImage(video, 0, 0, rect.width, rect.height);
+  recordCtx.drawImage(video, placement.x, placement.y, placement.width, placement.height);
   recordCtx.restore();
   recordCtx.drawImage(inkCanvas, 0, 0, rect.width, rect.height);
   if (recorder?.state === "recording") requestAnimationFrame(drawRecordFrame);
