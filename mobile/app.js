@@ -265,18 +265,34 @@ async function loadHandLandmarker() {
   const fileset = await vision.FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22-rc.20250304/wasm"
   );
-  handLandmarker = await vision.HandLandmarker.createFromOptions(fileset, {
-    baseOptions: {
-      modelAssetPath:
-        "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
-      delegate: "GPU",
-    },
+  const modelAssetPath =
+    "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
+  const options = {
     runningMode: "VIDEO",
     numHands: 1,
     minHandDetectionConfidence: 0.55,
     minHandPresenceConfidence: 0.5,
     minTrackingConfidence: 0.5,
-  });
+  };
+
+  try {
+    handLandmarker = await vision.HandLandmarker.createFromOptions(fileset, {
+      ...options,
+      baseOptions: {
+        modelAssetPath,
+        delegate: "GPU",
+      },
+    });
+  } catch (gpuError) {
+    console.warn("GPU hand model failed, falling back to CPU.", gpuError);
+    handLandmarker = await vision.HandLandmarker.createFromOptions(fileset, {
+      ...options,
+      baseOptions: {
+        modelAssetPath,
+        delegate: "CPU",
+      },
+    });
+  }
   return handLandmarker;
 }
 
@@ -308,8 +324,11 @@ async function startCamera() {
     shutterButton.setAttribute("aria-label", "开始录制");
     setStatus("任何手势都可用食指定位；三指握拳并捏合拇指食指时落笔。");
     detectHands();
-    loadHandLandmarker().catch(() => {
-      setStatus("手势模型暂时没加载成功，仍可用触屏签名和录制。");
+    loadHandLandmarker().then(() => {
+      setStatus("手势已就绪：食指定位，三指握拳并捏合时落笔。");
+    }).catch((error) => {
+      console.error("Hand model failed to load.", error);
+      setStatus("手势模型加载失败。请刷新重试；仍可用触屏签名和录制。");
     });
   } catch (error) {
     if (error.name === "NotAllowedError") {
