@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>镜头签 DV-98</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="dv-app">
+      <section class="dv-stage" aria-label="DV-98 镜头签">
+        <div class="stage-glow"></div>
+
+        <section class="viewfinder-unit" aria-label="DV 翻盖取景器">
+          <img class="viewfinder-shell" src="./assets/left-viewfinder.png" alt="" draggable="false" />
+          <div class="live-screen">
+            <video id="camera" playsinline muted></video>
+            <video id="playbackVideo" playsinline controls hidden></video>
+            <canvas id="inkCanvas"></canvas>
+            <canvas id="recordCanvas" aria-hidden="true"></canvas>
+            <div class="dv-filter" aria-hidden="true"></div>
+            <div id="cursor" class="cursor" aria-hidden="true"></div>
+
+            <div class="hud top-left">
+              <span class="rec-dot"></span>
+              <span id="recState">REC</span>
+              <span id="timecode">00:00:00</span>
+            </div>
+            <div class="hud top-right">
+              <span class="battery"><i></i></span>
+              <span>78%</span>
+            </div>
+            <div class="hud tape">SP ◈ 60min</div>
+            <div class="hud bottom-left">
+              <span class="tape-icon">▭▭</span>
+              <span>60min</span>
+              <strong>AUTO</strong>
+            </div>
+            <div class="hud date">2026.07.12</div>
+          </div>
+        </section>
+
+        <img class="hinge" src="./assets/center-hinge.png" alt="" draggable="false" />
+
+        <section class="control-unit" aria-label="DV 手持控制器">
+          <img class="control-shell" src="./assets/right-control-body.png" alt="" draggable="false" />
+          <button id="recordButton" class="hotspot rec-hotspot" type="button" aria-label="开始镜头或录制"></button>
+          <button id="resetButton" class="hotspot reset-hotspot" type="button" aria-label="重签，撤回上一笔"></button>
+          <button id="flipButton" class="hotspot flip-hotspot" type="button" aria-label="切换摄像头"></button>
+          <label class="zoom-hotspot" aria-label="变焦">
+            <input id="zoomControl" type="range" min="1" max="1.9" step="0.02" value="1" />
+          </label>
+        </section>
+
+        <p id="status" class="status">点击红色 REC 开启镜头。横屏使用效果最好。</p>
+        <button id="saveRecording" class="save-recording" type="button" hidden>保存 / 分享</button>
+        <a id="downloadLink" class="download-link" download="lens-signature-dv98.webm" hidden>下载视频</a>
+      </section>
+
+      <section class="rotate-hint" aria-label="横屏提示">
+        <div>
+          <strong>DV-98 是横屏机器</strong>
+          <span>请把手机横过来使用</span>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
