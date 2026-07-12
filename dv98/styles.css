@@ -394,46 +394,6 @@ input {
   display: none;
 }
 
-.rotate-hint {
-  display: none;
-}
-
-@media (orientation: portrait) and (max-width: 760px) {
-  .dv-stage {
-    filter: blur(6px) brightness(0.58);
-    transform: scale(0.86) rotate(-2deg);
-  }
-
-  .rotate-hint {
-    position: fixed;
-    inset: 0;
-    z-index: 30;
-    display: grid;
-    place-items: center;
-    padding: 24px;
-    pointer-events: none;
-  }
-
-  .rotate-hint div {
-    display: grid;
-    gap: 8px;
-    padding: 18px 20px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 18px;
-    background: rgba(0, 0, 0, 0.64);
-    backdrop-filter: blur(18px);
-    text-align: center;
-  }
-
-  .rotate-hint strong {
-    font-size: 1.2rem;
-  }
-
-  .rotate-hint span {
-    color: var(--muted);
-  }
-}
-
 @media (max-height: 420px) {
   .status {
     display: none;
