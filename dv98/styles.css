@@ -561,7 +561,6 @@ input {
 .hotspot,
 .zoom-hotspot {
   position: absolute;
-  z-index: 6;
   border: 0;
   padding: 0;
   background: transparent;
@@ -578,34 +577,38 @@ input {
 }
 
 .rec-hotspot {
-  left: 42%;
-  top: 27%;
-  width: 24%;
-  height: 32%;
+  z-index: 8;
+  left: 37%;
+  top: 39%;
+  width: 32%;
+  height: 27%;
   border-radius: 50%;
 }
 
 .reset-hotspot {
-  left: 25%;
-  top: 32%;
-  width: 15%;
-  height: 21%;
+  z-index: 9;
+  left: 77%;
+  top: 57%;
+  width: 20%;
+  height: 16%;
   border-radius: 18px;
 }
 
 .flip-hotspot {
-  left: 25%;
-  top: 57%;
-  width: 15%;
-  height: 21%;
+  z-index: 9;
+  left: 77%;
+  top: 74%;
+  width: 20%;
+  height: 16%;
   border-radius: 18px;
 }
 
 .zoom-hotspot {
-  left: 31%;
-  top: 78%;
-  width: 35%;
-  height: 15%;
+  z-index: 7;
+  left: 40%;
+  top: 19%;
+  width: 52%;
+  height: 18%;
   border-radius: 28px;
 }
 
