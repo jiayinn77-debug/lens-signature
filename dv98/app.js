@@ -1,4 +1,5 @@
 const stage = document.querySelector(".dv-stage");
+const introLayer = document.querySelector("#introLayer");
 const liveScreen = document.querySelector(".live-screen");
 const video = document.querySelector("#camera");
 const inkCanvas = document.querySelector("#inkCanvas");
@@ -39,6 +40,7 @@ let lastRecordingBlob = null;
 let lastRecordingFile = null;
 let zoom = 1;
 let isPlaybackActive = false;
+let isIntroComplete = false;
 const undoStack = [];
 const maxUndoSteps = 24;
 
@@ -495,6 +497,7 @@ function stopRecording() {
 }
 
 async function handleRecordButton() {
+  if (!isIntroComplete) return;
   if (!stream) {
     const ok = await startCamera();
     if (ok) startRecording();
@@ -590,3 +593,16 @@ saveRecording.addEventListener("click", shareLastRecording);
 window.addEventListener("resize", resizeCanvases);
 screen.orientation?.addEventListener?.("change", () => setTimeout(resizeCanvases, 250));
 resizeCanvases();
+stage.classList.add("has-intro");
+
+introLayer.addEventListener("click", () => {
+  if (isIntroComplete || stage.classList.contains("is-unfolding")) return;
+  stage.classList.add("is-unfolding");
+  setStatus("DV-98 已打开。点击红色 REC 开启镜头。");
+  window.setTimeout(() => {
+    isIntroComplete = true;
+    stage.classList.remove("has-intro", "is-unfolding");
+    stage.classList.add("intro-complete");
+    resizeCanvases();
+  }, 1120);
+});

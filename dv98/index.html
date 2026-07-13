@@ -8,8 +8,14 @@
   </head>
   <body>
     <main class="dv-app">
-      <section class="dv-stage" aria-label="DV-98 镜头签">
+      <section class="dv-stage has-intro" aria-label="DV-98 镜头签">
         <div class="stage-glow"></div>
+
+        <button id="introLayer" class="intro-layer" type="button" aria-label="打开 DV-98">
+          <span class="intro-handwriting">open me</span>
+          <img class="closed-dv" src="./assets/closed-dv.png" alt="" draggable="false" />
+          <span class="intro-tap">tap to unfold DV-98</span>
+        </button>
 
         <section class="viewfinder-unit" aria-label="DV 翻盖取景器">
           <img class="viewfinder-shell" src="./assets/left-viewfinder.png" alt="" draggable="false" />
