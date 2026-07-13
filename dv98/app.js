@@ -6,7 +6,6 @@ const inkCanvas = document.querySelector("#inkCanvas");
 const recordCanvas = document.querySelector("#recordCanvas");
 const recordButton = document.querySelector("#recordButton");
 const resetButton = document.querySelector("#resetButton");
-const flipButton = document.querySelector("#flipButton");
 const zoomControl = document.querySelector("#zoomControl");
 const statusEl = document.querySelector("#status");
 const cursor = document.querySelector("#cursor");
@@ -102,6 +101,15 @@ function resetStrokeState() {
   lastPoint = null;
   lastMidPoint = null;
   smoothedPoint = null;
+}
+
+function resetGestureState() {
+  isPinching = false;
+  drawingGestureFrames = 0;
+  missedGestureFrames = 0;
+  isDrawingByTouch = false;
+  lastGestureState = "";
+  cursor.classList.remove("is-drawing");
 }
 
 function undoInk() {
@@ -554,9 +562,17 @@ function exitPlayback(clearVideo = false) {
 }
 
 function handleDiscardPlayback() {
+  if (timerFrame) cancelAnimationFrame(timerFrame);
+  timerFrame = null;
+  recorder = null;
+  recordedChunks = [];
+  recState.textContent = "REC";
+  timecode.textContent = "00:00:00";
+  resetGestureState();
+  resetStrokeState();
   clearInkAfterSave();
   exitPlayback(true);
-  setStatus("已返回录制界面，画布已清空。");
+  setStatus("已返回录制界面，画布已清空。点击 REC 重新录制后可以继续签名。");
 }
 
 inkCanvas.addEventListener("pointerdown", (event) => {
@@ -589,10 +605,6 @@ for (const eventName of ["pointerup", "pointercancel", "pointerleave"]) {
 
 recordButton.addEventListener("click", handleRecordButton);
 resetButton.addEventListener("click", undoInk);
-flipButton.addEventListener("click", async () => {
-  facingMode = facingMode === "user" ? "environment" : "user";
-  await startCamera();
-});
 zoomControl.addEventListener("input", () => {
   zoom = Number(zoomControl.value);
   liveScreen.style.setProperty("--zoom", zoom);

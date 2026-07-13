@@ -594,15 +594,6 @@ input {
   border-radius: 18px;
 }
 
-.flip-hotspot {
-  z-index: 9;
-  left: 77%;
-  top: 74%;
-  width: 20%;
-  height: 16%;
-  border-radius: 18px;
-}
-
 .zoom-hotspot {
   z-index: 7;
   left: 40%;
