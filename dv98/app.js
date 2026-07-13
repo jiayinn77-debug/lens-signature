@@ -14,6 +14,7 @@ const timecode = document.querySelector("#timecode");
 const recState = document.querySelector("#recState");
 const playbackVideo = document.querySelector("#playbackVideo");
 const saveRecording = document.querySelector("#saveRecording");
+const discardPlaybackButton = document.querySelector("#discardPlayback");
 const downloadLink = document.querySelector("#downloadLink");
 
 const ctx = inkCanvas.getContext("2d", { alpha: true });
@@ -457,9 +458,10 @@ function showPlayback(blob) {
   playbackVideo.play().catch(() => {});
   downloadLink.href = url;
   saveRecording.hidden = false;
+  discardPlaybackButton.hidden = false;
   isPlaybackActive = true;
   stage.classList.add("is-playing-back");
-  setStatus("录好了。正在取景器里回放，点击保存后会清空笔画。");
+  setStatus("录好了。正在取景器里回放，可保存或返回重拍。");
 }
 
 function startRecording() {
@@ -539,6 +541,7 @@ function exitPlayback(clearVideo = false) {
   isPlaybackActive = false;
   stage.classList.remove("is-playing-back");
   saveRecording.hidden = true;
+  discardPlaybackButton.hidden = true;
   playbackVideo.pause();
   if (clearVideo) {
     playbackVideo.removeAttribute("src");
@@ -548,6 +551,12 @@ function exitPlayback(clearVideo = false) {
     lastRecordingFile = null;
     downloadLink.removeAttribute("href");
   }
+}
+
+function handleDiscardPlayback() {
+  clearInkAfterSave();
+  exitPlayback(true);
+  setStatus("已返回录制界面，画布已清空。");
 }
 
 inkCanvas.addEventListener("pointerdown", (event) => {
@@ -590,6 +599,7 @@ zoomControl.addEventListener("input", () => {
   setStatus(`变焦 ${zoom.toFixed(1)}x`);
 });
 saveRecording.addEventListener("click", shareLastRecording);
+discardPlaybackButton.addEventListener("click", handleDiscardPlayback);
 window.addEventListener("resize", resizeCanvases);
 screen.orientation?.addEventListener?.("change", () => setTimeout(resizeCanvases, 250));
 resizeCanvases();
